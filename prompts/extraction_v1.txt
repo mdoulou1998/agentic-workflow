@@ -1,0 +1,2 @@
+# extraction v1
+Extract discrete competence claims from the evidence document. Include verbatim span and character offsets.
