@@ -50,4 +50,4 @@ def retrieve(document: EvidenceDocument, client: Any, config: Dict[str, Any]) ->
         prompt_version="retrieval_v1",
     )
 
-    return output.dict()
+    return output.model_dump()
