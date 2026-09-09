@@ -29,12 +29,17 @@ api_key = os.environ.get("GEMINI_API_KEY")
 if not api_key:
     raise SystemExit("GEMINI_API_KEY not set in environment; add it to .env or export it in your shell")
 
+# Determine the default Gemini model via config (no hardcoded string in this file)
+from src.config.models import get_default_model
+
+default_gemini_model = get_default_model("gemini", fallback="gemini-3.6-flash")
+
 # Try to use the Gemini adapter if available; fall back to mock for dry-run
 try:
     client = ModelClient(
         provider="gemini",
-        default_model="gemini-2.0-flash",
-        pricing_table={"gemini-2.0-flash": 0.0},
+        default_model=default_gemini_model,
+        pricing_table={default_gemini_model: 0.0},
         api_key=api_key,
     )
     using = "gemini"
@@ -46,7 +51,7 @@ except Exception as e:
 
 # Safe confirmation: show that the key was received by the client (length only)
 masked = f"<redacted length={len(api_key)}>"
-print(f"GEMINI_API_KEY loaded; using provider={using}; key={masked}")
+print(f"GEMINI_API_KEY loaded; using provider={using}; model={getattr(client, 'default_model', '<unknown>')}; key={masked}")
 
 out = retrieval.retrieve(doc, client, config={})
 print(json.dumps(out, indent=2, default=str))
