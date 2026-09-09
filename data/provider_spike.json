@@ -1,22 +1,32 @@
 {
   "mock": {
-    "provider": "mock",
-    "model": "mock",
-    "ok": true,
-    "text": "[stub output]",
-    "tokens_in": 22,
-    "tokens_out": 1,
-    "cost": 0.0,
-    "latency": 3.0994415283203125e-06
+    "mock": {
+      "provider": "mock",
+      "model": "mock",
+      "ok": true,
+      "text": "[stub output]",
+      "tokens_in": 22,
+      "tokens_out": 1,
+      "cost": 0.0,
+      "latency": 3.0994415283203125e-06
+    }
   },
   "gemini": {
-    "provider": "gemini",
-    "model": "gemini-3.6-flash",
-    "ok": true,
-    "text": "**Extracted Competence Claims:**\n\n1. **Data Pipeline Development:** Ability to design and write code to create data pipelines.\n2. **Software/Data Testing:** Ability to execute and run tests to verify system or data functionality.\n\n---\n\n**Summary:**\nThe individual has demonstrated core competencies in data engineering (building pipelines) and basic quality assurance (running tests).",
-    "tokens_in": 27,
-    "tokens_out": 76,
-    "cost": 0.0,
-    "latency": 3.361407995223999
+    "gemini-3.6-flash": {
+      "provider": "gemini",
+      "model": "gemini-3.6-flash",
+      "ok": true,
+      "text": "**Extracted Competence Claims:**\n\n1. **Data Pipeline Development:** Ability to design and write code to create data pipelines.\n2. **Software/Data Testing:** Ability to execute and run tests to verify system or data functionality.\n\n---\n\n**Summary:**\nThe individual has demonstrated core competencies in data engineering (building pipelines) and basic quality assurance (running tests).",
+      "tokens_in": 27,
+      "tokens_out": 76,
+      "cost": 0.0,
+      "latency": 3.361407995223999
+    },
+    "gemini-2.0-flash": {
+      "provider": "gemini",
+      "model": "gemini-2.0-flash",
+      "ok": false,
+      "error": "404 NOT_FOUND. {'error': {'code': 404, 'message': 'This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API.', 'status': 'NOT_FOUND'}}"
+    }
   }
 }

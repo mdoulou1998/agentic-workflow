@@ -61,12 +61,21 @@ def call_provider(provider: str, model: str | None = None, provider_kwargs: dict
 def main():
     gemini_key = os.environ.get("GEMINI_API_KEY")
 
-    providers = [
-        ("mock", "mock", {}),
-        ("gemini", "gemini-3.6-flash", {"api_key": gemini_key} if gemini_key else {}),
-    ]
+    # load model ids from config if available
+    cfg_file = HERE / "config" / "models.json"
+    if cfg_file.exists():
+        cfg = json.loads(cfg_file.read_text())
+        providers_cfg = cfg.get("providers", {})
+    else:
+        providers_cfg = {"mock": ["mock"], "gemini": ["gemini-2.0-flash"]}
 
-    out = {p: call_provider(p, m, kw) for p, m, kw in providers}
+    out = {}
+    for prov, models in providers_cfg.items():
+        out[prov] = {}
+        for model in models:
+            kw = {"api_key": gemini_key} if prov == "gemini" and gemini_key else {}
+            res = call_provider(prov, model, kw)
+            out[prov][model] = res
 
     OUT.write_text(json.dumps(out, indent=2, ensure_ascii=False))
     print("Wrote provider spike output to", OUT)

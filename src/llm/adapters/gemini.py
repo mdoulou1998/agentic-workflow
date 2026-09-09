@@ -35,12 +35,36 @@ class GeminiAdapter:
         self.client = genai.Client(api_key=api_key or os.environ.get("GEMINI_API_KEY"))
 
     def call(self, prompt: str, model: str, temperature: float) -> Dict[str, Any]:
+        # Prefer the Chat API if available to avoid AFC warnings and follow
+        # SDK guidance. Fall back to models.generate_content for older SDKs.
+        # Both branches try to extract `text` and token usage metadata.
+        # Chat API path (recommended):
+        chat = getattr(self.client, "chat", None)
+        if chat is not None:
+            try:
+                # recommended Chat API use
+                resp = chat.send_message(model=model, input=prompt)
+                # response shapes can vary; try common attributes
+                text = getattr(resp, "text", None) or getattr(resp, "output", None)
+                if text is None:
+                    # some SDKs expose content differently
+                    text = getattr(resp, "content", None) or str(resp)
+                usage = getattr(resp, "usage_metadata", None) or getattr(resp, "usage", None)
+                tokens_in = getattr(usage, "prompt_token_count", 0) if usage else 0
+                tokens_out = getattr(usage, "candidates_token_count", 0) if usage else 0
+                return {"text": text, "tokens_in": tokens_in, "tokens_out": tokens_out}
+            except Exception:
+                # if Chat API call fails, fall back to models.generate_content below
+                pass
+
+        # Fallback: models.generate_content (older SDKs)
         response = self.client.models.generate_content(
             model=model,
             contents=prompt,
             config={"temperature": temperature},
         )
-        usage = getattr(response, "usage_metadata", None)
+        usage = getattr(response, "usage_metadata", None) or getattr(response, "usage", None)
         tokens_in = getattr(usage, "prompt_token_count", 0) if usage else 0
         tokens_out = getattr(usage, "candidates_token_count", 0) if usage else 0
-        return {"text": response.text, "tokens_in": tokens_in, "tokens_out": tokens_out}
+        text = getattr(response, "text", None) or getattr(response, "output", None) or str(response)
+        return {"text": text, "tokens_in": tokens_in, "tokens_out": tokens_out}
