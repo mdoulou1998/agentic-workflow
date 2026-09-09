@@ -9,6 +9,7 @@ doc = EvidenceDocument(
     text="I wrote a data pipeline and ran some tests",
     source=None
 )
-client = ModelClient(model_name="gpt-4", api_key="your_api_key_here")
+# Use `default_model` and allow unknown pricing when testing free or new models
+client = ModelClient(default_model="gpt-4", allow_unknown_pricing=True, api_key="your_api_key_here")
 out =  retrieval.retrieve(doc, client, config={})
 print(json.dumps(out, indent=2, default=str))
