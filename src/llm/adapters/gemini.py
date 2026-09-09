@@ -2,11 +2,19 @@ from __future__ import annotations
 
 import os
 from typing import Any, Dict
+from dotenv import load_dotenv
 
 try:
     from google import genai
 except ImportError:
     genai = None  # surfaced at construction time, not import time
+
+try:
+    load_dotenv()
+    api_key = os.environ.get("GEMINI_API_KEY")
+except Exception:
+    pass  # ignore if .env not present
+
 
 
 class GeminiAdapter:

@@ -41,7 +41,9 @@ class ModelClient:
         self.default_model = default_model
         self.allow_unknown_pricing = allow_unknown_pricing
         self.provider = provider
-        self._adapter: Adapter = _ADAPTERS[provider](**provider_kwargs)
+        # keep provider kwargs for debugging/inspection (do not print secrets)
+        self.provider_kwargs = provider_kwargs
+        self._adapter: Any = _ADAPTERS[provider](**provider_kwargs)
 
     def _cache_key(self, payload: Dict[str, Any]) -> str:
         full = {**payload, "provider": self.provider}

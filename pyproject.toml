@@ -5,6 +5,7 @@ description = "Multi-agent apprenticeship evidence assessment (skeleton)"
 requires-python = ">=3.12"
 dependencies = [
     "google-genai>=2.22.0",
+    "load-dotenv>=0.1.0",
     "mypy>=2.3.1",
     "pydantic>=2.13.5",
     "pytest>=9.1.1",
